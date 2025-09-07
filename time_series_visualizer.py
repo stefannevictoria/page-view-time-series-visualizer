@@ -69,25 +69,17 @@ def draw_bar_plot():
 def draw_box_plot():
     # Prepare data for box plots (this part is done!)
     df_box = df.copy() # faz uma cópia do dataset
-    df_box = df_box.reset_index() # coluna 'date' deixa de ser índice e volta a ser coluna normal
-    df_box['year'] = df_box['date'].dt.year # cria uma coluna de ano
-    df_box['month'] = df_box['date'].dt.month # cria uma coluna de mês
+    df_box.reset_index(inplace=True)
+    df_box['year'] = [d.year for d in df_box.date]
+    df_box['month'] = [d.strftime('%b') for d in df_box.date]
     
     ordered_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
+    # com pd.Categorical é possível definir a ordem de uma lita/categorias
     df_box['month'] = pd.Categorical(
         df_box['month'],       # valores reais da coluna
         categories=ordered_months, # ordem correta
         ordered=True
-    )
-
-    df_box['month'] = df_box['date'].dt.strftime('%b') # converte os meses de números para o nome abreviado
-
-    # com pd.Categorical é possível definir a ordem de uma lita/categorias
-    df_box['month'] = pd.Categorical(
-        df_box['month'], # valores da coluna
-        categories=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        ordered=True # garante a ordem cronológica dos meses
     )
 
     # Draw box plots (using Seaborn)
